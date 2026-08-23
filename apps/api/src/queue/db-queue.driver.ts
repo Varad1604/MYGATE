@@ -18,15 +18,26 @@ export class DbQueueDriver implements IQueue, OnModuleDestroy {
   constructor(private readonly prisma: PrismaService) {}
 
   async enqueue(queue: string, payload: Record<string, unknown>, opts?: EnqueueOptions): Promise<string> {
-    const job = await this.prisma.queueJob.create({
-      data: {
-        queue,
-        payload: payload as object,
-        runAt: opts?.runAt ?? new Date(),
-        dedupeKey: opts?.dedupeKey ? `${queue}:${opts.dedupeKey}` : undefined,
-      },
-    });
-    return job.id;
+    const runAt = opts?.runAt ?? new Date();
+    const dedupeKey = opts?.dedupeKey ? `${queue}:${opts.dedupeKey}` : null;
+    // Dedupe collapses only against ACTIVE jobs; a DONE/FAILED row with the
+    // same key is recycled. Avoids unique-violation pile-ups for recurring jobs.
+    const id = await this.prisma.$queryRaw<{ id: string }[]>`
+      INSERT INTO "QueueJob" (id, queue, payload, status, "runAt", "updatedAt", "dedupeKey")
+      VALUES (${crypto.randomUUID()}::uuid, ${queue}, ${JSON.stringify(payload)}::jsonb, 'PENDING', ${runAt}, now(), ${dedupeKey}::text)
+      ON CONFLICT ("dedupeKey") DO UPDATE SET
+        status = 'PENDING',
+        payload = ${JSON.stringify(payload)}::jsonb,
+        "runAt" = ${runAt},
+        attempts = 0,
+        "lastError" = NULL,
+        "updatedAt" = now()
+      WHERE "QueueJob"."status" IN ('DONE', 'FAILED')
+      RETURNING id`;
+    if (id[0]) return id[0].id;
+    // Conflict with an ACTIVE job — dedupe hit, nothing to do.
+    const existing = await this.prisma.queueJob.findUnique({ where: { dedupeKey: dedupeKey! }, select: { id: true } });
+    return existing?.id ?? "";
   }
 
   register(queue: string, handler: JobHandler): void {
@@ -70,7 +81,9 @@ export class DbQueueDriver implements IQueue, OnModuleDestroy {
         await handler((job.payload ?? {}) as Record<string, unknown>, { id: job.id, attempt: job.attempts });
         await this.prisma.queueJob.update({ where: { id: job.id }, data: { status: "DONE" } });
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
+        // ASCII-sanitize: error text may contain characters outside the
+        // database client encoding on Windows.
+        const message = (err instanceof Error ? err.message : String(err)).replace(/[^\x20-\x7E]/g, "?");
         const row = await this.prisma.queueJob.findUnique({ where: { id: job.id } });
         const exhausted = (row?.attempts ?? 1) >= (row?.maxAttempts ?? 5);
         await this.prisma.queueJob.update({

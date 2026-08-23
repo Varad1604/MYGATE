@@ -114,6 +114,38 @@ function startViaScheduledTask() {
   } catch { /* not running */ }
   sh("schtasks", ["/Create", "/TN", TASK_NAME, "/XML", xmlFile, "/F"]);
   sh("schtasks", ["/Run", "/TN", TASK_NAME]);
+
+  // Watchdog: revives the server if it ever gets terminated.
+  const watchXml = path.join(localData, "pg-watch-task.xml");
+  const watchCmd =
+    `if (-not (Test-NetConnection 127.0.0.1 -Port ${PORT} -InformationLevel Quiet -WarningAction SilentlyContinue)) ` +
+    `{ schtasks /Run /TN ${TASK_NAME} | Out-Null }`;
+  const watchTaskXml = `<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <Triggers>
+    <TimeTrigger>
+      <Repetition><Interval>PT1M</Interval><StopAtDurationEnd>false</StopAtDurationEnd></Repetition>
+      <StartBoundary>2020-01-01T00:00:00</StartBoundary>
+    </TimeTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author"><LogonType>InteractiveToken</LogonType></Principal>
+  </Principals>
+  <Settings>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <Enabled>true</Enabled>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+  </Settings>
+  <Actions Context="Author">
+    <Exec>
+      <Command>C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe</Command>
+      <Arguments>-NoProfile -ExecutionPolicy Bypass -Command "${esc(watchCmd)}"</Arguments>
+    </Exec>
+  </Actions>
+</Task>`;
+  fs.writeFileSync(watchXml, "\uFEFF" + watchTaskXml, "utf16le");
+  sh("schtasks", ["/Create", "/TN", `${TASK_NAME}Watch`, "/XML", watchXml, "/F"]);
 }
 
 async function main() {

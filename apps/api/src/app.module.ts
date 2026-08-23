@@ -7,6 +7,7 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { QueueModule } from "./queue/queue.module";
 import { StorageModule } from "./storage/storage.module";
 import { AuthController } from "./auth/auth.controller";
+import { DevAuthController } from "./auth/dev-auth.controller";
 import { AuthService } from "./auth/auth.service";
 import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { PermissionsGuard } from "./auth/permissions.guard";
@@ -16,6 +17,7 @@ import { RealtimeModule } from "./realtime/realtime.module";
 import { NotificationsModule } from "./notifications/notifications.module";
 import { CommunitiesModule } from "./modules/communities/communities.module";
 import { ResidentsModule } from "./modules/residents/residents.module";
+import { VisitorsModule } from "./modules/visitors/visitors.module";
 import { HealthController } from "./health/health.controller";
 
 @Module({
@@ -40,8 +42,9 @@ import { HealthController } from "./health/health.controller";
     NotificationsModule,
     CommunitiesModule,
     ResidentsModule,
+    VisitorsModule,
   ],
-  controllers: [AuthController, HealthController],
+  controllers: [AuthController, DevAuthController, HealthController],
   providers: [
     AuthService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },

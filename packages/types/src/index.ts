@@ -64,12 +64,13 @@ export type VisitorStatus = (typeof VISITOR_STATUSES)[number];
 /** Visitor lifecycle state machine. Enforced server-side (ADR-006). */
 export const VISITOR_TRANSITIONS: Record<VisitorStatus, VisitorStatus[]> = {
   CREATED: ["WAITING_APPROVAL", "APPROVED", "CANCELLED", "EXPIRED"],
-  WAITING_APPROVAL: ["APPROVED", "REJECTED", "EXPIRED", "CANCELLED"],
+  WAITING_APPROVAL: ["APPROVED", "REJECTED", "EXPIRED", "CANCELLED", "OVERRIDDEN"],
   APPROVED: ["CHECKED_IN", "EXPIRED", "CANCELLED", "OVERRIDDEN"],
+  // Explicit resident rejection is honored — not silently overridable.
   REJECTED: [],
   CHECKED_IN: ["CHECKED_OUT"],
   CHECKED_OUT: [],
-  EXPIRED: [],
+  EXPIRED: ["OVERRIDDEN"],
   CANCELLED: [],
   DENIED: [],
   OVERRIDDEN: ["CHECKED_IN"],

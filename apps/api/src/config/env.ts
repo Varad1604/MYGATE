@@ -22,6 +22,7 @@ const envSchema = z.object({
   EMAIL_PROVIDER: z.enum(["mock"]).default("mock"),
   OTP_TTL_SECONDS: z.coerce.number().default(300),
   OTP_MAX_ATTEMPTS: z.coerce.number().default(5),
+  OTP_REQUESTS_PER_10MIN: z.coerce.number().default(3),
   DEFAULT_VISITOR_APPROVAL_TIMEOUT_SECONDS: z.coerce.number().default(90),
 });
 

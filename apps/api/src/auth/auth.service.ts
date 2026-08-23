@@ -38,12 +38,18 @@ export class AuthService {
     private readonly jwt: JwtService,
   ) {
     const env = getEnv();
-    this.otpSender =
-      env.NODE_ENV === "production"
-        ? (() => {
-            throw new Error("Production OTP provider adapter not configured yet — refusing mock.");
-          })()
-        : new MockOtpSender();
+    if (env.NODE_ENV === "production") {
+      throw new Error("Mock OTP sender selected in production — refusing to boot. Configure OTP_PROVIDER.");
+    }
+    this.mockSender = new MockOtpSender();
+    this.otpSender = this.mockSender;
+  }
+
+  private readonly mockSender: MockOtpSender;
+
+  /** Development/E2E only — strictly gated by the caller. */
+  peekLastOtp(target: string): string | null {
+    return this.mockSender.peekLastCode(normalizeTarget(target));
   }
 
   // ── Password login (admins) ────────────────────────────────────────────────
@@ -278,12 +284,13 @@ export class AuthService {
 
   private otpRecent = new Map<string, number[]>();
 
-  /** In-process OTP throttle (per target): max 3 requests / 10 min. */
+  /** In-process OTP throttle (per target): configurable, default 3 requests / 10 min. */
   private assertNotSpammy(target: string) {
     const now = Date.now();
     const windowMs = 10 * 60 * 1000;
+    const max = getEnv().OTP_REQUESTS_PER_10MIN;
     const recent = (this.otpRecent.get(target) ?? []).filter((t) => now - t < windowMs);
-    if (recent.length >= 3) throw Errors.rateLimited("Too many OTP requests. Try again later.");
+    if (recent.length >= max) throw Errors.rateLimited("Too many OTP requests. Try again later.");
     recent.push(now);
     this.otpRecent.set(target, recent);
   }
