@@ -1,0 +1,48 @@
+# Full-parity development stack. Used when Docker is available.
+# The repository ALSO runs without Docker on Windows via `pnpm setup`
+# (embedded Postgres + local-storage + DB-backed queue fallback).
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: societyos-postgres
+    environment:
+      POSTGRES_USER: societyos
+      POSTGRES_PASSWORD: societyos
+      POSTGRES_DB: societyos
+    ports:
+      - "55432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U societyos -d societyos"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    container_name: societyos-redis
+    ports:
+      - "56379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  minio:
+    image: minio/minio:latest
+    container_name: societyos-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "59000:9000"
+      - "59001:9001"
+    volumes:
+      - miniodata:/data
+
+volumes:
+  pgdata:
+  miniodata:

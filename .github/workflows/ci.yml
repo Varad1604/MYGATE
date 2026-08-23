@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: societyos
+          POSTGRES_PASSWORD: societyos
+          POSTGRES_DB: societyos_test
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U societyos"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://societyos:societyos@127.0.0.1:55432/societyos_test?schema=public
+      JWT_ACCESS_SECRET: ci-access-secret-ci-access-secret-ci-32
+      JWT_REFRESH_SECRET: ci-refresh-secret-ci-refresh-secret-32
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build

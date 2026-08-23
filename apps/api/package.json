@@ -1,0 +1,63 @@
+{
+  "name": "@societyos/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "node dist/main.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo \"(eslint config lands in hardening phase)\"",
+    "test": "jest --passWithNoTests",
+    "db:up": "node scripts/dev-postgres.mjs start",
+    "db:down": "node scripts/dev-postgres.mjs stop",
+    "db:migrate": "node scripts/run-with-env.mjs prisma migrate dev",
+    "db:deploy": "node scripts/run-with-env.mjs prisma migrate deploy",
+    "db:seed": "node scripts/run-with-env.mjs ts-node --transpile-only prisma/seed.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.712.0",
+    "@aws-sdk/s3-request-presigner": "3.712.0",
+    "@nestjs/common": "11.2.1",
+    "@nestjs/core": "11.2.1",
+    "@nestjs/jwt": "11.0.0",
+    "@nestjs/platform-express": "11.2.1",
+    "@nestjs/swagger": "11.2.0",
+    "@nestjs/throttler": "6.4.0",
+    "@node-rs/argon2": "2.1.0",
+    "@prisma/client": "6.19.3",
+    "@societyos/permissions": "workspace:*",
+    "@societyos/types": "workspace:*",
+    "@types/express": "5.0.1",
+    "body-parser": "1.20.3",
+    "bullmq": "5.34.5",
+    "helmet": "8.0.0",
+    "ioredis": "5.4.2",
+    "pdfkit": "0.17.1",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.1",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@embedded-postgres/windows-x64": "17.10.0-beta.17",
+    "@nestjs/cli": "11.0.10",
+    "@nestjs/schematics": "11.0.9",
+    "@types/jest": "29.5.14",
+    "@types/node": "22.10.5",
+    "@types/pdfkit": "0.17.1",
+    "embedded-postgres": "17.10.0-beta.17",
+    "jest": "29.7.0",
+    "prisma": "6.19.3",
+    "ts-jest": "29.2.5",
+    "ts-node": "10.9.2",
+    "typescript": "5.7.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "testRegex": ".*\\.spec\\.ts$"
+  }
+}
