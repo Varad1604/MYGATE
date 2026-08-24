@@ -54,8 +54,7 @@ export default function DashboardPage() {
     })();
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(load, [session]);
+  useEffect(() => { load(); }, [session]);
 
   return (
     <>

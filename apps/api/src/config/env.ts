@@ -27,6 +27,29 @@ const envSchema = z.object({
   DEFAULT_VISITOR_APPROVAL_TIMEOUT_SECONDS: z.coerce.number().default(90),
 });
 
+/**
+ * Production must not run on developer conveniences: the demo webhook secret
+ * and mock SMS provider would silently make money flows forgeable and login
+ * non-functional against real phones.
+ */
+const envSchemaWithProdGuards = envSchema.superRefine((env, ctx) => {
+  if (env.NODE_ENV !== "production") return;
+  if (env.MOCK_PAYMENT_WEBHOOK_SECRET === "dev-mock-payment-secret") {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["MOCK_PAYMENT_WEBHOOK_SECRET"],
+      message: "Set a strong MOCK_PAYMENT_WEBHOOK_SECRET before accepting payments.",
+    });
+  }
+  if (env.OTP_PROVIDER === "mock") {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["OTP_PROVIDER"],
+      message: "Configure a real OTP_PROVIDER (sms-adapter/email-adapter) for production.",
+    });
+  }
+});
+
 export type Env = z.infer<typeof envSchema>;
 
 let cached: Env | null = null;
@@ -34,7 +57,7 @@ let cached: Env | null = null;
 /** Parse and cache process.env once; throw a readable error on misconfiguration. */
 export function getEnv(): Env {
   if (cached) return cached;
-  const parsed = envSchema.safeParse(process.env);
+  const parsed = envSchemaWithProdGuards.safeParse(process.env);
   if (!parsed.success) {
     const issues = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
     throw new Error(`Invalid environment configuration → ${issues}`);
