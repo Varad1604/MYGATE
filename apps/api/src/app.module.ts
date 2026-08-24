@@ -18,6 +18,7 @@ import { NotificationsModule } from "./notifications/notifications.module";
 import { CommunitiesModule } from "./modules/communities/communities.module";
 import { ResidentsModule } from "./modules/residents/residents.module";
 import { VisitorsModule } from "./modules/visitors/visitors.module";
+import { HelpdeskModule } from "./modules/helpdesk/helpdesk.module";
 import { HealthController } from "./health/health.controller";
 
 @Module({
@@ -43,6 +44,7 @@ import { HealthController } from "./health/health.controller";
     CommunitiesModule,
     ResidentsModule,
     VisitorsModule,
+    HelpdeskModule,
   ],
   controllers: [AuthController, DevAuthController, HealthController],
   providers: [

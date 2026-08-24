@@ -148,7 +148,9 @@ export const SYSTEM_ROLE_PERMISSIONS: Record<SystemRole, Permission[]> = {
   ),
 
   GUARD: p("visitor.read", "visitor.create", "visitor.gate.operations"),
-  STAFF: p("helpdesk.read"),
+  // Field staff progress tickets assigned to them (resolution rights are
+  // additionally constrained in the service layer to their own assignments).
+  STAFF: p("helpdesk.read", "helpdesk.resolve"),
   VENDOR_USER: [],
 };
 

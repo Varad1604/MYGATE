@@ -390,6 +390,8 @@ model User {
   notifications   Notification[]
   vehicles        Vehicle[]
   emergencyContacts EmergencyContact[]
+  ticketsRaised   Ticket[] @relation("TicketsRaised")
+  ticketsAssigned Ticket[] @relation("TicketsAssigned")
 
   @@index([phone])
   @@index([email])
@@ -751,6 +753,8 @@ model Ticket {
   community  Community      @relation(fields: [communityId], references: [id])
   category   TicketCategory @relation(fields: [categoryId], references: [id])
   unit       Unit?          @relation(fields: [unitId], references: [id])
+  raisedBy   User           @relation("TicketsRaised", fields: [raisedById], references: [id])
+  assignedTo User?          @relation("TicketsAssigned", fields: [assignedToUserId], references: [id])
   comments   TicketComment[]
   attachments TicketAttachment[]
   history    TicketHistory[]
