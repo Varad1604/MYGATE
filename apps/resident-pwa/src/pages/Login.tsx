@@ -3,13 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../api";
 import { useAuth } from "../auth";
 
+interface VerifyResponse {
+  accessToken: string;
+  refreshToken: string;
+  context: { roleKeys: string[]; communityId: string | null };
+}
+
 export default function Login() {
   const [target, setTarget] = useState("");
   const [code, setCode] = useState("");
   const [stage, setStage] = useState<"target" | "code">("target");
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const { setMe } = useAuth();
+  const { refresh } = useAuth();
   const nav = useNavigate();
 
   async function requestCode() {
@@ -17,8 +23,6 @@ export default function Login() {
     try {
       await api.post("/auth/request-otp", { target });
       setStage("code");
-      // Dev convenience: the mock OTP sender exposes codes only while
-      // NODE_ENV=development (endpoint 404s in production builds).
       if (import.meta.env.DEV) {
         try {
           const peek = await fetch(`/api/v1/__dev/last-otp?target=${encodeURIComponent(target)}`);
@@ -26,45 +30,34 @@ export default function Login() {
             const { code } = (await peek.json()) as { code: string | null };
             if (code) setCode(code);
           }
-        } catch { /* manual entry still fine */ }
+        } catch { /* manual entry fine */ }
       }
-    } catch (e) {
-      setErr((e as Error).message);
-    } finally { setBusy(false); }
+    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   }
 
   async function verify() {
     setBusy(true); setErr(null);
     try {
-      const res = await api.post<{ accessToken: string; refreshToken: string; context: { roleKeys: string[]; communityId: string | null; fullName?: string } }>(
-        "/auth/verify-otp", { target, code },
-      );
+      const res = await api.post<VerifyResponse>("/auth/verify-otp", { target, code });
       api.setTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
-      localStorage.setItem("sos.guard.tokens", JSON.stringify({ accessToken: res.accessToken, refreshToken: res.refreshToken }));
-      if (!res.context.roleKeys.includes("GUARD") && !res.context.roleKeys.includes("SECURITY_MANAGER")) {
-        setErr("This app is for gate staff only.");
+      localStorage.setItem("sos.resident.tokens", JSON.stringify({ accessToken: res.accessToken, refreshToken: res.refreshToken }));
+      if (res.context.roleKeys.includes("GUARD") || res.context.roleKeys.includes("SECURITY_MANAGER")) {
+        setErr("Gate staff should use the Guard app.");
         return;
       }
-      setMe({
-        userId: "", // /auth/me refetch fills it
-        fullName: res.context.fullName ?? "",
-        communityId: res.context.communityId,
-        roleKeys: res.context.roleKeys,
-      });
+      refresh();
       nav("/", { replace: true });
-    } catch (e) {
-      setErr((e as Error).message);
-    } finally { setBusy(false); }
+    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   }
 
   return (
     <div>
-      <h1>SocietyOS Guard</h1>
+      <h1>SocietyOS Resident</h1>
       <div className="card">
         {stage === "target" ? (
           <>
-            <label>Phone number</label>
-            <input value={target} onChange={(e) => setTarget(e.target.value)} placeholder="+91…" inputMode="tel" />
+            <label>Phone or email</label>
+            <input value={target} onChange={(e) => setTarget(e.target.value)} placeholder="+91… or you@example.com" />
             <button onClick={requestCode} disabled={busy || !target}>Get OTP</button>
           </>
         ) : (
@@ -75,7 +68,7 @@ export default function Login() {
           </>
         )}
         {err && <p className="err-text">{err}</p>}
-        <p className="muted">Gate operations run even when the network is down — entries queue locally and sync later.</p>
+        <p className="muted">New here? Signing in with your registered phone creates your account automatically.</p>
       </div>
     </div>
   );

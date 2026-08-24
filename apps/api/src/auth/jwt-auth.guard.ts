@@ -32,9 +32,16 @@ export class JwtAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest<AuthedRequest>();
     if (isPublic) return true;
 
+    // Browser EventSource cannot set Authorization headers. For the SSE stream
+    // only, accept the short-lived (15 min) access token as a query parameter.
+    let token: string | undefined;
     const header = req.headers.authorization;
-    if (!header?.startsWith("Bearer ")) throw new UnauthorizedException();
-    const token = header.slice(7);
+    if (header?.startsWith("Bearer ")) {
+      token = header.slice(7);
+    } else if (req.path.endsWith("/realtime/stream") && typeof req.query.access_token === "string") {
+      token = req.query.access_token;
+    }
+    if (!token) throw new UnauthorizedException();
     let payload: { sub: string; typ: string };
     try {
       payload = await this.jwt.verifyAsync(token, { secret: getEnv().JWT_ACCESS_SECRET });
