@@ -359,6 +359,7 @@ model Unit {
   vehicles   Vehicle[]
   visits     Visit[]
   invitations VisitorInvitation[]
+  domesticHelpAssignments DomesticHelpUnitAssignment[]
 
   @@unique([communityId, label])
   @@index([communityId, status])
@@ -691,6 +692,7 @@ model DomesticHelpUnitAssignment {
   createdAt DateTime @default(now())
 
   profile DomesticHelpProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  unit    Unit                @relation(fields: [unitId], references: [id])
 
   @@unique([profileId, unitId])
   @@index([unitId])
