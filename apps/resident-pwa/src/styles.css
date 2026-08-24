@@ -1,32 +1,32 @@
-/* SocietyOS Resident — "Quiet Confidence" mobile theme.
-   Warm paper, ink text, one deep-teal accent. 48px touch targets. */
+/* SocietyOS Resident — Apple-style mobile theme.
+   Airy gray canvas, floating white cards, one blue, frosted tab bar. */
 
 :root {
-  --paper: #fafaf8;
+  --paper: #f5f5f7;
   --surface: #ffffff;
-  --surface-2: #f2f1ed;
-  --ink: #191917;
-  --ink-2: #57564f;
-  --ink-3: #8a887f;
-  --line: #e4e2db;
-  --accent: #0f6b5c;
-  --accent-hover: #0c584b;
-  --accent-subtle: #e7f1ee;
-  --ok: #1a7f37;      --ok-subtle: #e9f4ec;
-  --warn: #9a6700;    --warn-subtle: #fbf0e1;
-  --danger: #c22731;  --danger-subtle: #fbebec;
-
-  --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
-  --t-fast: 150ms ease-out;
+  --surface-2: #fbfbfd;
+  --ink: #1d1d1f;
+  --ink-2: #6e6e73;
+  --ink-3: #86868b;
+  --line: rgba(0, 0, 0, 0.08);
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --accent-subtle: rgba(0, 113, 227, 0.1);
+  --ok: #248a3d;     --ok-subtle: rgba(52, 199, 89, 0.12);
+  --warn: #b25000;   --warn-subtle: rgba(255, 149, 0, 0.14);
+  --danger: #de3151; --danger-subtle: rgba(255, 59, 48, 0.1);
+  --r-sm: 9px; --r-md: 12px; --r-lg: 18px;
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
+  --t-fast: 160ms cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #161615; --surface: #1f1f1d; --surface-2: #262624;
-    --ink: #ecebe7; --ink-2: #b3b1a9; --ink-3: #807e76; --line: #33322f;
-    --accent: #3aa08c; --accent-hover: #4bb39e; --accent-subtle: #1c2f2a;
-    --ok: #57ab5a; --ok-subtle: #1e2d21;
-    --warn: #c98a1b; --warn-subtle: #2f2718;
-    --danger: #e5534b; --danger-subtle: #331d1c;
+    --paper: #000; --surface: #1c1c1e; --surface-2: #2c2c2e;
+    --ink: #f5f5f7; --ink-2: #a1a1a6; --ink-3: #6e6e73;
+    --line: rgba(255, 255, 255, 0.1);
+    --accent: #0a84ff; --accent-subtle: rgba(10, 132, 255, 0.16);
+    --ok: #30d158; --warn: #ff9f0a; --danger: #ff453a;
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -34,105 +34,110 @@
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, sans-serif;
   background: var(--paper); color: var(--ink);
-  font-size: 15px; line-height: 1.5;
+  font-size: 16px; line-height: 1.47;
   -webkit-font-smoothing: antialiased;
 }
-#root { max-width: 480px; margin: 0 auto; padding: var(16px) 16px 84px; padding: 16px 16px 84px; }
+#root { max-width: 480px; margin: 0 auto; padding: 20px 20px 96px; }
 
-h1 { font-size: 20px; font-weight: 650; letter-spacing: -0.01em; margin: 8px 0 16px; }
-h2 { font-size: 16px; font-weight: 600; margin: 24px 0 10px; }
+h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 18px; }
+h2 { font-size: 20px; font-weight: 650; letter-spacing: -0.01em; margin: 28px 0 12px; }
 
 .card {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: none;
+  box-shadow: var(--shadow-card);
   border-radius: var(--r-lg);
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 18px;
+  margin-bottom: 14px;
 }
 
 button {
-  width: 100%; min-height: 48px;
-  padding: 12px 16px; margin-top: 8px;
-  border: 1px solid transparent; border-radius: var(--r-md);
+  width: 100%; min-height: 50px;
+  padding: 13px 20px; margin-top: 10px;
+  border: none; border-radius: 980px;
   background: var(--accent); color: #fff;
-  font-weight: 600; font-size: 15px; cursor: pointer;
-  transition: background var(--t-fast), opacity var(--t-fast);
+  font-weight: 600; font-size: 16px; cursor: pointer;
+  transition: transform var(--t-fast), filter var(--t-fast), opacity var(--t-fast);
 }
-button:hover { background: var(--accent-hover); }
-button:disabled { opacity: 0.55; }
+button:hover { filter: brightness(1.06); }
+button:active { transform: scale(0.97); }
+button:disabled { opacity: 0.45; }
 button.approve { background: var(--ok); }
 button.reject { background: var(--danger); }
-button.ghost { background: transparent; color: var(--accent); }
+button.ghost { background: var(--accent-subtle); color: var(--accent); }
 
 input, select, textarea {
   width: 100%; min-height: 48px;
-  padding: 12px 14px; margin-top: 6px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-  font-size: 16px; /* >=16px prevents iOS zoom */
+  padding: 13px 16px; margin-top: 8px;
+  border: none; border-radius: var(--r-md);
+  background: var(--surface-2); color: var(--ink);
+  font-size: 17px;
 }
 input:focus, select:focus, textarea:focus {
-  outline: none; border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-subtle);
+  outline: none;
+  box-shadow: 0 0 0 3.5px var(--accent-subtle);
 }
-label { display: block; margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+label { display: block; margin-top: 14px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
 
-/* Bottom tab bar — thumb zone, active = accent + label weight */
+/* Frosted bottom bar */
 .nav {
   position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
   width: min(480px, 100%);
   display: flex;
-  background: var(--surface);
-  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 0.5px solid var(--line);
   z-index: 10;
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 .nav a {
   flex: 1; text-align: center;
-  padding: 14px 4px; min-height: 48px;
+  padding: 15px 4px; min-height: 52px;
   color: var(--ink-3); text-decoration: none;
   font-size: 12px; font-weight: 500;
   transition: color var(--t-fast);
 }
-.nav a.active { color: var(--accent); font-weight: 700; }
+.nav a.active { color: var(--accent); font-weight: 650; }
 
-.muted { color: var(--ink-2); font-size: 13px; }
-.err-text { color: var(--danger); font-size: 13px; }
-.ok-text { color: var(--ok); font-size: 13px; }
+.muted { color: var(--ink-2); font-size: 14px; }
+.err-text { color: var(--danger); font-size: 14px; }
+.ok-text { color: var(--ok); font-size: 14px; }
 
 .badge {
-  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  display: inline-block; padding: 4px 11px; border-radius: 980px;
   font-size: 12px; font-weight: 600;
   background: var(--surface-2); color: var(--ink-2);
+  border: 0.5px solid var(--line);
 }
-.badge.accent { background: var(--accent-subtle); color: var(--accent); }
-.badge.urgent { background: var(--warn-subtle); color: var(--warn); }
-.badge.danger { background: var(--danger-subtle); color: var(--danger); }
-.badge.ok { background: var(--ok-subtle); color: var(--ok); }
+.badge.accent { background: var(--accent-subtle); color: var(--accent); border-color: transparent; }
+.badge.urgent { background: var(--warn-subtle); color: var(--warn); border-color: transparent; }
+.badge.danger { background: var(--danger-subtle); color: var(--danger); border-color: transparent; }
+.badge.ok { background: var(--ok-subtle); color: var(--ok); border-color: transparent; }
 
 .code-box {
-  font-family: ui-monospace, monospace; font-size: 22px;
-  letter-spacing: 0.18em; text-align: center;
+  font-family: ui-monospace, monospace; font-size: 24px; font-weight: 600;
+  letter-spacing: 0.16em; text-align: center;
   background: var(--accent-subtle); color: var(--accent);
-  border: 1px dashed var(--accent); border-radius: var(--r-md);
-  padding: 14px; margin-top: 8px; word-break: break-all;
+  border-radius: var(--r-md);
+  padding: 16px; margin-top: 10px; word-break: break-all;
   font-variant-numeric: tabular-nums;
 }
 
 .list-item {
   display: flex; justify-content: space-between; align-items: center; gap: 8px;
-  padding: 12px 0; border-bottom: 1px solid var(--line);
+  padding: 13px 0; border-bottom: 0.5px solid var(--line);
 }
 .list-item:last-child { border-bottom: none; }
-.row-btns { display: flex; gap: 8px; margin-top: 8px; }
+.row-btns { display: flex; gap: 10px; margin-top: 10px; }
 .row-btns button { margin-top: 0; }
 
 .skeleton {
   border-radius: var(--r-sm); min-height: 14px;
   background: linear-gradient(90deg, var(--surface-2) 25%, var(--line) 50%, var(--surface-2) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.2s infinite linear;
+  animation: shimmer 1.4s infinite linear;
 }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }

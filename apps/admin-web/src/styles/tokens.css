@@ -1,77 +1,75 @@
-/* ============================================================
-   SocietyOS Admin — "Quiet Confidence" design tokens
-   Single source of truth. NO hardcoded hex outside this file.
-   Light theme, warm paper; dark-mode-ready variable structure.
-   ============================================================ */
+/* SocietyOS — Apple-inspired design tokens.
+   Canvas: airy gray. Surfaces: floating white. Ink: near-black.
+   One blue. Generous radii. Shadows so soft they read as elevation, not decoration. */
 
 :root {
-  /* ── Ink & paper (neutrals, warm) ─────────────────────────── */
-  --paper: #fafaf8;          /* app background            */
-  --surface: #ffffff;        /* cards, panels             */
-  --surface-2: #f2f1ed;      /* subtle wells, table head  */
-  --ink: #191917;            /* primary text              */
-  --ink-2: #57564f;          /* secondary text            */
-  --ink-3: #8a887f;          /* placeholder, captions     */
-  --line: #e4e2db;           /* hairline borders          */
-  --line-strong: #d3d1c7;    /* hover borders             */
+  /* Neutrals — Apple canvas */
+  --paper: #f5f5f7;
+  --surface: #ffffff;
+  --surface-2: #fbfbfd;
+  --ink: #1d1d1f;
+  --ink-2: #6e6e73;
+  --ink-3: #86868b;
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.16);
 
-  /* ── Accent: deep teal, used sparingly ────────────────────── */
-  --accent: #0f6b5c;
-  --accent-hover: #0c584b;
-  --accent-subtle: #e7f1ee;  /* tinted backgrounds        */
+  /* One accent, used sparingly */
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --accent-subtle: rgba(0, 113, 227, 0.1);
   --on-accent: #ffffff;
 
-  /* ── Semantic (status/money/danger ONLY) ──────────────────── */
-  --ok: #1a7f37;
-  --ok-subtle: #e9f4ec;
-  --warn: #9a6700;
-  --warn-subtle: #fbf0e1;
-  --danger: #c22731;
-  --danger-hover: #a91e27;
-  --danger-subtle: #fbebec;
+  /* Semantic — iOS system palette tuned for text contrast */
+  --ok: #248a3d;       --ok-subtle: rgba(52, 199, 89, 0.12);
+  --warn: #b25000;     --warn-subtle: rgba(255, 149, 0, 0.14);
+  --danger: #de3151;   --danger-subtle: rgba(255, 59, 48, 0.1);
 
-  /* ── Type scale (strict; nothing outside it) ──────────────── */
+  /* Type scale — large titles, tight tracking */
   --fs-xs: 12px;
   --fs-sm: 13px;
-  --fs-md: 14px;
-  --fs-lg: 16px;
-  --fs-xl: 20px;
+  --fs-md: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 21px;
   --fs-2xl: 28px;
 
-  /* ── Space (4px grid) ─────────────────────────────────────── */
+  /* Spacing — roomier than before; whitespace IS the design */
   --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
-  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+  --s-5: 24px; --s-6: 32px; --s-7: 44px; --s-8: 60px;
 
-  /* ── Shape & elevation ────────────────────────────────────── */
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
-  --shadow-overlay: 0 8px 30px rgba(25, 25, 23, 0.14);
+  /* Radii — soft, continuous-corner feel */
+  --r-sm: 9px;
+  --r-md: 12px;
+  --r-lg: 18px;
 
-  /* ── Motion ───────────────────────────────────────────────── */
-  --t-fast: 150ms ease-out;
-  --t-med: 200ms ease-out;
+  /* Elevation — barely-there for rest, real for floating */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
+  --shadow-overlay: 0 20px 60px rgba(0, 0, 0, 0.16);
 
-  /* ── Layout ───────────────────────────────────────────────── */
-  --sidebar-w: 232px;
-  --content-max: 1200px;
+  --t-fast: 160ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  --t-med: 240ms cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  --sidebar-w: 236px;
+  --content-max: 1120px;
+
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #161615;
-    --surface: #1f1f1d;
-    --surface-2: #262624;
-    --ink: #ecebe7;
-    --ink-2: #b3b1a9;
-    --ink-3: #807e76;
-    --line: #33322f;
-    --line-strong: #454440;
-    --accent: #3aa08c;
-    --accent-hover: #4bb39e;
-    --accent-subtle: #1c2f2a;
-    --ok: #57ab5a;      --ok-subtle: #1e2d21;
-    --warn: #c98a1b;    --warn-subtle: #2f2718;
-    --danger: #e5534b;  --danger-hover: #f0655e; --danger-subtle: #331d1c;
+    --paper: #000000;
+    --surface: #1c1c1e;
+    --surface-2: #2c2c2e;
+    --ink: #f5f5f7;
+    --ink-2: #a1a1a6;
+    --ink-3: #6e6e73;
+    --line: rgba(255, 255, 255, 0.1);
+    --line-strong: rgba(255, 255, 255, 0.2);
+    --accent: #0a84ff;
+    --accent-subtle: rgba(10, 132, 255, 0.16);
+    --ok: #30d158;   --ok-subtle: rgba(48, 209, 88, 0.14);
+    --warn: #ff9f0a; --warn-subtle: rgba(255, 159, 10, 0.16);
+    --danger: #ff453a; --danger-subtle: rgba(255, 69, 58, 0.14);
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.5);
+    --shadow-overlay: 0 20px 60px rgba(0, 0, 0, 0.7);
   }
 }
