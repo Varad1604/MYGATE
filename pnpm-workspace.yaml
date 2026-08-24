@@ -1,6 +1,9 @@
 packages:
   - "apps/*"
   - "packages/*"
+  # mobile-app is an npm-managed Capacitor shell (CI installs with npm there);
+  # keep it out of the pnpm graph or frozen-lockfile rejects it.
+  - "!apps/mobile-app"
 
 onlyBuiltDependencies:
   - "@embedded-postgres/windows-x64"
