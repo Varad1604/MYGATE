@@ -39,3 +39,6 @@ Thumbs.db
 
 # turbo
 .turbo/
+
+apps/mobile-app/android/
+apps/mobile-app/node_modules/
