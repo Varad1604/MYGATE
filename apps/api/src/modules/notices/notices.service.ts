@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { Inject } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { Errors } from "../../common/app-exception";
@@ -212,7 +212,7 @@ export class NoticesService {
     return notice;
   }
 
-  /** Expiry sweep — flips PUBLISHED notices past expiresAt to EXPIRED. */
+  /** Expiry sweep â€” flips PUBLISHED notices past expiresAt to EXPIRED. */
   async expireSweep(): Promise<number> {
     const res = await this.prisma.notice.updateMany({
       where: { status: "PUBLISHED", expiresAt: { lte: new Date() } },

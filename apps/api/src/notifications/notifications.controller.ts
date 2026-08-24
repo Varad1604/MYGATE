@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { z } from "zod";
 import { PrismaService } from "../prisma/prisma.service";
 import { CurrentUser } from "../auth/current-user.decorator";

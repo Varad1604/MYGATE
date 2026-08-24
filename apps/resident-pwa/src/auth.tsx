@@ -30,7 +30,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .then(setMe)
       .catch(() => setMe(null))
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) return <div className="card">Loading…</div>;

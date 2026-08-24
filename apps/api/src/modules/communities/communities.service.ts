@@ -19,7 +19,7 @@ export class CommunitiesService {
 
   async createCommunity(
     dto: { name: string; organizationName?: string; address?: string; city?: string; state?: string; postalCode?: string; timezone: string },
-    createdByUserId: string,
+    _createdByUserId: string,
   ) {
     const slugBase = dto.name
       .toLowerCase()

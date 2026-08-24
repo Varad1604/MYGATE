@@ -1,5 +1,5 @@
 import { createHash, randomBytes, randomInt } from "node:crypto";
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { createHash as argonHash } from "node:crypto";
 import { hash, verify } from "@node-rs/argon2";
@@ -39,7 +39,7 @@ export class AuthService {
   ) {
     const env = getEnv();
     if (env.NODE_ENV === "production") {
-      throw new Error("Mock OTP sender selected in production — refusing to boot. Configure OTP_PROVIDER.");
+      throw new Error("Mock OTP sender selected in production â€” refusing to boot. Configure OTP_PROVIDER.");
     }
     this.mockSender = new MockOtpSender();
     this.otpSender = this.mockSender;
@@ -47,12 +47,12 @@ export class AuthService {
 
   private readonly mockSender: MockOtpSender;
 
-  /** Development/E2E only — strictly gated by the caller. */
+  /** Development/E2E only â€” strictly gated by the caller. */
   peekLastOtp(target: string): string | null {
     return this.mockSender.peekLastCode(normalizeTarget(target));
   }
 
-  // ── Password login (admins) ────────────────────────────────────────────────
+  // â”€â”€ Password login (admins) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   async loginWithPassword(identifier: string, password: string, meta: { ip?: string; ua?: string }) {
     const user = await this.prisma.user.findFirst({
@@ -72,7 +72,7 @@ export class AuthService {
     return this.issueSession(user.id, meta);
   }
 
-  // ── OTP login ──────────────────────────────────────────────────────────────
+  // â”€â”€ OTP login â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   async requestOtp(rawTarget: string, purpose: "LOGIN" | "PASSWORD_RESET" | "EMAIL_VERIFY") {
     const target = normalizeTarget(rawTarget);
@@ -129,7 +129,7 @@ export class AuthService {
     return this.issueSession(user.id, meta);
   }
 
-  // ── Sessions ───────────────────────────────────────────────────────────────
+  // â”€â”€ Sessions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   async issueSession(userId: string, meta: { ip?: string; ua?: string }) {
     const familyId = randomBytes(16).toString("hex");
@@ -148,7 +148,7 @@ export class AuthService {
     const tokenHash = await sha256(refreshTokenRaw);
     const stored = await this.prisma.refreshToken.findUnique({ where: { tokenHash } });
     if (!stored || stored.revokedAt || stored.expiresAt < new Date()) {
-      // Possible reuse of a rotated token → revoke whole family.
+      // Possible reuse of a rotated token â†’ revoke whole family.
       if (stored?.revokedAt && stored.familyId) {
         await this.prisma.refreshToken.updateMany({
           where: { familyId: stored.familyId, revokedAt: null },
@@ -230,7 +230,7 @@ export class AuthService {
     return { accessToken, context: publicContext(await this.loadAccessContext(userId)) };
   }
 
-  // ── Access context (permissions loaded server-side, cached briefly) ───────
+  // â”€â”€ Access context (permissions loaded server-side, cached briefly) â”€â”€â”€â”€â”€â”€â”€
 
   async loadAccessContext(userId: string): Promise<AccessContext> {
     const cached = this.ctxCache.get(userId);
@@ -280,7 +280,7 @@ export class AuthService {
     this.ctxCache.delete(userId);
   }
 
-  // ── helpers ────────────────────────────────────────────────────────────────
+  // â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private otpRecent = new Map<string, number[]>();
 
