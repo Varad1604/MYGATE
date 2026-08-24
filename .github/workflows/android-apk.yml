@@ -30,7 +30,7 @@ jobs:
         working-directory: apps/mobile-app
         run: |
           npm i -D @capacitor/cli@6 && npm i @capacitor/core@6 @capacitor/android@6
-          npx cap add android --skip-read
+          npx cap add android
           npx cap sync android
 
       - name: Assemble debug APK
