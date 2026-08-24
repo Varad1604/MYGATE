@@ -1,0 +1,8 @@
+{
+  "appId": "dev.societyos.resident",
+  "appName": "SocietyOS Resident",
+  "webDir": "../apps/resident-pwa/dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

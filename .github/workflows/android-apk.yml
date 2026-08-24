@@ -1,0 +1,43 @@
+name: Android APK
+
+# Build an installable debug APK of the resident app on every push to this
+# branch. Download it from the run's Artifacts section.
+on:
+  push:
+    branches: [feature/mobile-app]
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 10.15.0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+
+      - name: Install + build web assets
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @societyos/resident-pwa build
+        env:
+          VITE_API_URL: https://your-api-domain.example.com/api/v1
+
+      - name: Capacitor Android scaffold
+        working-directory: apps/mobile-app
+        run: |
+          npm i -D @capacitor/cli@6 && npm i @capacitor/core@6 @capacitor/android@6
+          npx cap add android --skip-read
+          npx cap sync android
+
+      - name: Assemble debug APK
+        working-directory: apps/mobile-app/android
+        run: chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: societyos-resident-debug-apk
+          path: apps/mobile-app/android/app/build/outputs/apk/debug/app-debug.apk
