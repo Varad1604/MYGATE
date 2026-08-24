@@ -21,6 +21,7 @@ import { VisitorsModule } from "./modules/visitors/visitors.module";
 import { HelpdeskModule } from "./modules/helpdesk/helpdesk.module";
 import { BillingModule } from "./modules/billing/billing.module";
 import { AmenitiesModule } from "./modules/amenities/amenities.module";
+import { NoticesModule } from "./modules/notices/notices.module";
 import { HealthController } from "./health/health.controller";
 
 @Module({
@@ -49,6 +50,7 @@ import { HealthController } from "./health/health.controller";
     HelpdeskModule,
     BillingModule,
     AmenitiesModule,
+    NoticesModule,
   ],
   controllers: [AuthController, DevAuthController, HealthController],
   providers: [

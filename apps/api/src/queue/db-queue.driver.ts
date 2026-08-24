@@ -61,6 +61,16 @@ export class DbQueueDriver implements IQueue, OnModuleDestroy {
   }
 
   private async drainOnce(): Promise<void> {
+    // Reap stale claims: rows left PROCESSING by a crashed/killed worker
+    // would otherwise block their dedupeKey forever.
+    try {
+      await this.prisma.$queryRaw`
+        UPDATE "QueueJob"
+        SET status = 'PENDING', "updatedAt" = now()
+        WHERE status = 'PROCESSING' AND "updatedAt" < now() - interval '120 seconds'`;
+    } catch {
+      // reap failure is non-fatal; next tick retries
+    }
     for (const [queue, handler] of this.handlers) {
       // Claim one due job atomically.
       const claimed = await this.prisma.$queryRaw<{ id: string; payload: unknown; attempts: number }[]>`

@@ -1,32 +1,41 @@
-import { Inject, Injectable, type OnModuleInit } from "@nestjs/common";
+import { Inject, Injectable, type OnModuleDestroy, type OnModuleInit } from "@nestjs/common";
 import { VisitorsService } from "./visitors.service";
 import type { IQueue } from "../../queue/queue.types";
 
 const QUEUE = "visitors";
-export const SWEEP_JOB = "expire-sweep";
 
 /**
- * Self-rescheduling sweep job: expires WAITING_APPROVAL requests past the
- * community timeout and stale APPROVED invitations. Runs every 15s; the
- * dedupeKey prevents queue pile-up if a run takes longer than the interval.
+ * Visitor expiry sweep — periodic, in-process (15s). Queue-based
+ * self-rescheduling proved fragile: the next tick enqueued while its own
+ * row was PROCESSING no-ops on dedupe, silently killing the chain.
  */
 @Injectable()
-export class VisitorExpiryJob implements OnModuleInit {
+export class VisitorExpiryJob implements OnModuleInit, OnModuleDestroy {
+  private static readonly INTERVAL_MS = 15_000;
+  private timer: NodeJS.Timeout | null = null;
+
   constructor(
     @Inject("IQueue") private readonly queue: IQueue,
     private readonly visitors: VisitorsService,
   ) {}
 
   onModuleInit(): void {
-    this.queue.register(QUEUE, async (_payload, meta) => {
-      if (meta.attempt > 1) return; // never retry sweeps — next tick covers it
+    this.queue.register(QUEUE, async () => {
       await this.visitors.expireSweep();
-      await this.queue.enqueue(QUEUE, {}, {
-        runAt: new Date(Date.now() + 15_000),
-        dedupeKey: `${SWEEP_JOB}`,
-      });
     });
-    // Seed the first tick (idempotent via dedupeKey).
-    void this.queue.enqueue(QUEUE, {}, { runAt: new Date(Date.now() + 10_000), dedupeKey: SWEEP_JOB });
+    const tick = async () => {
+      try {
+        await this.visitors.expireSweep();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error("[visitor-expiry] failed:", err instanceof Error ? err.message : err);
+      }
+      this.timer = setTimeout(() => { void tick(); }, VisitorExpiryJob.INTERVAL_MS);
+    };
+    this.timer = setTimeout(() => { void tick(); }, 8_000);
+  }
+
+  onModuleDestroy(): void {
+    if (this.timer) clearTimeout(this.timer);
   }
 }

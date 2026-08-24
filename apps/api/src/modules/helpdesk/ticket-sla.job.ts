@@ -1,24 +1,42 @@
-import { Inject, Injectable, type OnModuleInit } from "@nestjs/common";
+import { Inject, Injectable, type OnModuleDestroy, type OnModuleInit } from "@nestjs/common";
 import { HelpdeskService } from "./helpdesk.service";
 import type { IQueue } from "../../queue/queue.types";
 
 const QUEUE = "helpdesk";
-const SWEEP = "sla-sweep";
 
-/** Self-rescheduling SLA breach sweep — every 60s, deduped. */
+/**
+ * SLA breach sweep — periodic, in-process. Runs every 60s regardless of
+ * queue-row state (a queue-based self-reschedule silently dies when the
+ * next tick is enqueued while its own row is still PROCESSING).
+ */
 @Injectable()
-export class TicketSlaJob implements OnModuleInit {
+export class TicketSlaJob implements OnModuleInit, OnModuleDestroy {
+  private static readonly INTERVAL_MS = 60_000;
+  private timer: NodeJS.Timeout | null = null;
+
   constructor(
     @Inject("IQueue") private readonly queue: IQueue,
     private readonly helpdesk: HelpdeskService,
   ) {}
 
   onModuleInit(): void {
-    this.queue.register(QUEUE, async (_payload, meta) => {
-      if (meta.attempt > 1) return; // sweeps never retry
+    // Queue stays available for one-shot jobs on this queue.
+    this.queue.register(QUEUE, async () => {
       await this.helpdesk.slaSweep();
-      await this.queue.enqueue(QUEUE, {}, { runAt: new Date(Date.now() + 60_000), dedupeKey: SWEEP });
     });
-    void this.queue.enqueue(QUEUE, {}, { runAt: new Date(Date.now() + 30_000), dedupeKey: SWEEP });
+    const tick = async () => {
+      try {
+        await this.helpdesk.slaSweep();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error("[sla-sweep] failed:", err instanceof Error ? err.message : err);
+      }
+      this.timer = setTimeout(() => { void tick(); }, TicketSlaJob.INTERVAL_MS);
+    };
+    this.timer = setTimeout(() => { void tick(); }, 30_000);
+  }
+
+  onModuleDestroy(): void {
+    if (this.timer) clearTimeout(this.timer);
   }
 }
