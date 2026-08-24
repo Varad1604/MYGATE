@@ -8,7 +8,7 @@ interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   user: { id: string; fullName: string };
-  context: { communityId: string; communityName?: string };
+  context: { communityId: string; communityName?: string; isPlatformSuperAdmin?: boolean };
 }
 
 export default function LoginPage() {
@@ -29,6 +29,7 @@ export default function LoginPage() {
         name: res.user.fullName,
         communityId: res.context.communityId,
         communityName: res.context.communityName ?? "Community",
+        isPlatformSuperAdmin: res.context.isPlatformSuperAdmin ?? false,
       });
       window.location.href = "/dashboard";
     } catch (e2) {

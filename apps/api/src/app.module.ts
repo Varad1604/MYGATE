@@ -23,6 +23,7 @@ import { BillingModule } from "./modules/billing/billing.module";
 import { AmenitiesModule } from "./modules/amenities/amenities.module";
 import { NoticesModule } from "./modules/notices/notices.module";
 import { ParkingModule } from "./modules/parking/parking.module";
+import { ReportsModule } from "./modules/reports/reports.module";
 import { HealthController } from "./health/health.controller";
 
 @Module({
@@ -53,6 +54,7 @@ import { HealthController } from "./health/health.controller";
     AmenitiesModule,
     NoticesModule,
     ParkingModule,
+    ReportsModule,
   ],
   controllers: [AuthController, DevAuthController, HealthController],
   providers: [

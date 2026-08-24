@@ -42,6 +42,9 @@ async function bootstrap(): Promise<void> {
   const queue = app.get("IQueue") as { start: () => Promise<void> };
   await queue.start();
 
+  // SIGTERM/SIGINT (containers, task managers) finish in-flight work.
+  app.enableShutdownHooks();
+
   await app.listen(env.PORT, "0.0.0.0");
   new Logger("Bootstrap").log(`API ready on http://localhost:${env.PORT}/api/v1 · OpenAPI /docs`);
 }

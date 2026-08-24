@@ -6,6 +6,7 @@ import { useRequireSession, clearSession } from "@/lib/session";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/reports", label: "Reports" },
   { href: "/tickets", label: "Helpdesk" },
   { href: "/invoices", label: "Billing" },
   { href: "/notices", label: "Notices" },
@@ -36,6 +37,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {n.label}
           </Link>
         ))}
+        {session.isPlatformSuperAdmin && (
+          <Link
+            href="/platform"
+            className="nav-item"
+            style={{ color: "var(--warn)", ...((pathname.startsWith("/platform") ? { background: "#16223a" } : {})) }}
+          >
+            ⚡ Platform
+          </Link>
+        )}
         <div style={{ flex: 1 }} />
         <div className="muted" style={{ fontSize: 12, padding: "0 10px 8px" }}>
           {session.name}

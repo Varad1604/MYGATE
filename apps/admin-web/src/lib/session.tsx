@@ -7,6 +7,7 @@ export interface SessionInfo {
   name: string;
   communityId: string;
   communityName: string;
+  isPlatformSuperAdmin?: boolean;
 }
 
 const KEY = "societyos.admin.session";
