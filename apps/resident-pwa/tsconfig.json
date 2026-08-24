@@ -9,5 +9,8 @@
     "noEmit": true,
     "types": ["vite/client"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Keep app-local React 18 types authoritative even when a sibling app
+  // (admin-web) hoists React 19 types to the workspace root.
+  "typeRoots": ["./node_modules/@types", "../../node_modules/@types"]
 }

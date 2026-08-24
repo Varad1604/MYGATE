@@ -3,7 +3,6 @@ import { Public } from "./jwt-auth.guard";
 import { AuthService } from "./auth.service";
 import { getEnv } from "../config/env";
 import { Errors } from "../common/app-exception";
-import { normalizeTarget } from "@societyos/types";
 
 /**
  * STRICTLY development/E2E support — disabled unless NODE_ENV=development.

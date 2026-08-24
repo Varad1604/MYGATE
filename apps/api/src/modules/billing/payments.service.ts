@@ -223,4 +223,23 @@ export class PaymentsService {
       include: { receipt: { select: { reference: true, pdfFileId: true } } },
     });
   }
+
+  /**
+   * DEV-ONLY: simulate the gateway capturing a pending order by feeding a
+   * correctly-signed event through the production webhook path.
+   */
+  async devCapture(providerOrderId: string): Promise<{ duplicate: boolean }> {
+    const payment = await this.prisma.payment.findFirst({ where: { providerOrderId } });
+    if (!payment) throw Errors.notFound("Payment");
+    const payload = {
+      eventId: `dev-${Date.now()}-${providerOrderId.slice(-6)}`,
+      type: "payment.captured" as const,
+      providerOrderId,
+      providerPaymentId: `mockpay_dev_${payment.id.slice(0, 8).replace(/-/g, "")}`,
+      amountPaise: payment.amountPaise,
+      signature: "",
+    };
+    payload.signature = this.provider.sign(payload);
+    return this.handleWebhook(payload);
+  }
 }
