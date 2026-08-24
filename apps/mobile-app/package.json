@@ -1,0 +1,6 @@
+{
+  "name": "@societyos/mobile-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Capacitor shell wrapping the resident PWA for Android."
+}
