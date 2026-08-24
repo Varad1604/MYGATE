@@ -5,7 +5,8 @@ export const CreateTicketSchema = z.object({
   unitId: z.string().uuid().optional(),
   locationText: z.string().trim().max(120).optional(),
   title: z.string().trim().min(4).max(120),
-  description: z.string().trim().min(10).max(3000),
+  // UI presents details as optional; keep the contract honest.
+  description: z.string().trim().max(3000).optional(),
   priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
   clientEventId: z.string().uuid().optional(),
 });

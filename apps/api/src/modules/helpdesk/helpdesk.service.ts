@@ -93,7 +93,7 @@ export class HelpdeskService {
         locationText: dto.locationText,
         raisedById: userId,
         title: dto.title,
-        description: dto.description,
+        description: dto.description ?? "",
         priority: dto.priority,
         slaFirstResponseDueAt: category.slaFirstResponseMins
           ? new Date(now + category.slaFirstResponseMins * 60_000)
