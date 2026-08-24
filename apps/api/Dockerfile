@@ -4,18 +4,10 @@ FROM node:22-alpine AS base
 RUN corepack enable
 WORKDIR /repo
 
-# --- deps: fetch the full workspace lockfile graph once ---
-FROM base AS deps
-COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
-COPY apps/api/package.json apps/api/
-COPY packages/api-client/package.json packages/api-client/
-COPY packages/permissions/package.json packages/permissions/
-RUN pnpm fetch
-
-# --- build: compile TS + prisma client ---
-FROM deps AS build
+# --- build: full source, normal install (store caching comes later if needed) ---
+FROM base AS build
 COPY . .
-RUN pnpm install --frozen-lockfile --offline \
+RUN pnpm install --frozen-lockfile \
  && pnpm --filter @societyos/api exec prisma generate \
  && pnpm --filter @societyos/permissions build \
  && pnpm --filter @societyos/api-client build \
