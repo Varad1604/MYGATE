@@ -1,0 +1,54 @@
+# SocietyOS — single-host PRODUCTION stack.
+# Secrets come from .env next to this file (see .env.example); the API refuses
+# to boot on dev defaults in production, so set real values first.
+#   cp .env.example .env  → fill values → docker compose -f docker-compose.prod.yml up -d --build
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-societyos}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-societyos}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-societyos}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--maxmemory-policy", "noeviction"]
+
+  api:
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    restart: unless-stopped
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgres://${POSTGRES_USER:-societyos}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-societyos}
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: "${JWT_ACCESS_SECRET:?run openssl rand -hex 32}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET:?run openssl rand -hex 32}"
+      MOCK_PAYMENT_WEBHOOK_SECRET: ${MOCK_PAYMENT_WEBHOOK_SECRET:?set a strong secret}
+      OTP_PROVIDER: ${OTP_PROVIDER:?set sms-adapter or email-adapter}
+      CORS_ORIGINS: ${PUBLIC_ORIGIN:?set https://your-domain}
+
+  admin:
+    build: { context: ., dockerfile: apps/admin-web/Dockerfile }
+    restart: unless-stopped
+    depends_on: [api]
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      API_PROXY_ORIGIN: http://api:4000
+
+volumes:
+  pgdata:

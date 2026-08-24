@@ -34,13 +34,17 @@ async function bootstrap(): Promise<void> {
     runWithRequestContext(ctx, next);
   });
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle("SocietyOS API")
-    .setDescription("Multi-tenant Community Management ERP & Gate Security SaaS")
-    .setVersion("0.1.0")
-    .addBearerAuth()
-    .build();
-  SwaggerModule.setup("docs", app, SwaggerModule.createDocument(app, swaggerConfig));
+  // Interactive API explorer is a development tool; skip it entirely in
+  // production (schema generation stays available via `pnpm --filter api docs`).
+  if (process.env.NODE_ENV !== "production") {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle("SocietyOS API")
+      .setDescription("Multi-tenant Community Management ERP & Gate Security SaaS")
+      .setVersion("0.1.0")
+      .addBearerAuth()
+      .build();
+    SwaggerModule.setup("docs", app, SwaggerModule.createDocument(app, swaggerConfig));
+  }
 
   const queue = app.get("IQueue") as { start: () => Promise<void> };
   await queue.start();

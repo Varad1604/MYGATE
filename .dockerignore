@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+**/.next
+**/.turbo
+**/*.tsbuildinfo
+**/.localdata
+.git
+.env
+.env.*
+!.env.example
+docs
+scripts/e2e-*.ps1

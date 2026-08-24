@@ -7,7 +7,8 @@ let client: ApiClient | null = null;
 
 export function api(): ApiClient {
   if (!client) {
-    client = new ApiClient(process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:4000/api/v1");
+    // Same-origin by default: next.config.mjs proxies /api to the backend.
+    client = new ApiClient(process.env.NEXT_PUBLIC_API_BASE ?? "/api/v1");
     // Rehydrate tokens persisted by the login page.
     const raw = typeof window !== "undefined" ? window.localStorage.getItem("societyos.tokens") : null;
     if (raw) {
