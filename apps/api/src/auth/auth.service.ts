@@ -11,6 +11,7 @@ import { MockOtpSender } from "./otp-sender";
 
 export interface AccessContext {
   userId: string;
+  fullName?: string;
   communityId?: string;
   isPlatformSuperAdmin: boolean;
   roleKeys: string[];
@@ -266,6 +267,7 @@ export class AuthService {
 
     const ctx: AccessContext = {
       userId: user.id,
+      fullName: user.fullName,
       communityId: active?.communityId,
       isPlatformSuperAdmin: user.isPlatformSuperAdmin,
       roleKeys,

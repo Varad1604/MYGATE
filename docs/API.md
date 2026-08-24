@@ -51,3 +51,26 @@ Mutations that create financial or gate records accept
 `visitor.approval_requested`, `visitor.approved`, `visitor.rejected`,
 `visitor.expired`, `visitor.checked_in`, `visitor.checked_out`,
 `ticket.updated`, `notification.new`, `notice.published`.
+
+## Reports (reports.view)
+
+- `GET /communities/:cid/reports/summary` — KPIs: residents, occupancy,
+  visits today, open tickets by status, dues billed/collected/outstanding.
+- `GET /communities/:cid/reports/collections?from=YYYY-MM&to=YYYY-MM` —
+  billed vs collected per billing period.
+- `GET /communities/:cid/reports/helpdesk?days=30` — status/category splits,
+  SLA response coverage, currently-breached count.
+- `GET /communities/:cid/reports/visitors?days=30` — visits per day and
+  approval-method split.
+
+## Platform (platform.communities.manage)
+
+- `GET /platform/communities` — all tenants.
+- `POST /platform/communities` — onboard a community.
+- `PATCH /platform/communities/:id/status` — ACTIVE / SUSPENDED.
+
+## Dev-only surface (NODE_ENV=development only; 404 in production)
+
+- `GET /__dev/last-otp?target=` — autofill the mock OTP.
+- `POST /__dev/payments/capture` — simulate gateway capture through the
+  production signed-webhook path.

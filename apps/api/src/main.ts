@@ -1,6 +1,9 @@
 import "reflect-metadata";
 import { loadDotenv } from "./config/load-dotenv";
 
+// Load .env FIRST. Everything below that needs env at module-evaluation time
+// (decorators, config factories) must run after this — which is why AppModule
+// is imported dynamically inside bootstrap() instead of statically.
 loadDotenv();
 
 import { Logger } from "@nestjs/common";
@@ -8,12 +11,12 @@ import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
-import { AppModule } from "./app.module";
 import { getEnv } from "./config/env";
 import { AllExceptionsFilter } from "./common/all-exceptions.filter";
 import { newRequestContext, runWithRequestContext } from "./common/request-context";
 
 async function bootstrap(): Promise<void> {
+  const { AppModule } = await import("./app.module");
   const env = getEnv();
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 

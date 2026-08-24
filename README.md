@@ -33,6 +33,7 @@ API console when `OTP_PROVIDER=mock`).
 ### End-to-end suites (all passing)
 
 ```bash
+scripts/e2e-scenarios.ps1   # FULL Phase-10 matrix: onboarding A-J + security negatives
 scripts/e2e-visitors.ps1    # gate check-in/out, resident approvals, overrides
 scripts/e2e-billing.ps1     # bill runs, invoices, signed webhooks, receipts
 scripts/e2e-amenities.ps1   # booking race test (concurrency-safe)

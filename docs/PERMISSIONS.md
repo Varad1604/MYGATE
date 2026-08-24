@@ -34,7 +34,21 @@ Operations: `GUARD`, `STAFF`, `VENDOR_USER`.
 | Create invoices | ❌ | ❌ | create | ❌ | ❌ |
 | Reconcile payments | ❌ | ❌ | reconcile | ❌ | ❌ |
 | Resolve tickets | ❌ | ❌ | ❌ | own tickets | ❌ |
+| Read ANY community ticket | ✅ | ❌ | ❌ | ❌ own only (`/me/tickets` + own detail) | ❌ |
 | Audit log view | ✅ | ❌ | ❌ | ❌ | ❌ |
+
+> **Note:** residents deliberately do NOT hold `helpdesk.read`. That
+> permission means "read every ticket in the community" (staff surface).
+> Residents see their own tickets through `/me/tickets`; the detail
+> endpoint allows self-access regardless. Granting it to residents was an
+> IDOR-class over-grant, caught by `scripts/e2e-scenarios.ps1` scenario J.
+
+## Workspace gotcha
+
+The API imports the *compiled* `dist/` of workspace packages. After editing
+`packages/permissions`, run `pnpm --filter @societyos/permissions build`,
+then `node apps/api/scripts/sync-system-roles.mjs` to refresh per-community
+system role rows — otherwise servers keep enforcing the stale catalog.
 
 Custom roles: community admins compose permissions into new roles;
 system roles cannot be edited. Every permission check is evaluated inside the

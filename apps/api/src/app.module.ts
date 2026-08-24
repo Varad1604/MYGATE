@@ -28,8 +28,15 @@ import { HealthController } from "./health/health.controller";
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot({
-      throttlers: [{ name: "default", ttl: 60_000, limit: 300 }],
+    // NOTE: forRootAsync (not forRoot) — the factory runs at injection time,
+    // AFTER loadDotenv() has populated process.env. Static forRoot would
+    // evaluate during module import, before .env is loaded.
+    ThrottlerModule.forRootAsync({
+      useFactory: () => ({
+        throttlers: [
+          { name: "default", ttl: 60_000, limit: Number(process.env.THROTTLE_LIMIT_PER_MIN ?? 300) },
+        ],
+      }),
     }),
     JwtModule.registerAsync({
       useFactory: () => {

@@ -17,8 +17,8 @@ states, audit where needed, tests, docs, green build).
 | 6 | Amenities + transactional booking | ✅ |
 | 7 | Notices + notification service | ✅ |
 | 8 | Vehicles + parking | ✅ |
-| 9 | Dashboards/reports + audit UI + platform super admin | 🚧 dashboard+audit live; reports aggregation pending |
-| 10 | E2E A–J, hardening, seed data finalization, docs | 🚧 module suites green; scenario matrix pass pending |
+| 9 | Dashboards/reports + audit UI + platform super admin | ✅ reports API + Reports page; platform console live |
+| 10 | E2E A–J, hardening, seed data finalization, docs | ✅ scripts/e2e-scenarios.ps1 green; ESLint 9; graceful shutdown |
 
 Release 2 items start only after Phase 10 is green.
 

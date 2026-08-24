@@ -7,6 +7,8 @@ export interface RequestContext {
   userAgent?: string;
   userId?: string;
   communityId?: string;
+  /** Display snapshot for audit rows; filled by JwtAuthGuard after auth. */
+  actorLabel?: string;
 }
 
 const als = new AsyncLocalStorage<RequestContext>();

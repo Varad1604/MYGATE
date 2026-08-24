@@ -36,7 +36,9 @@ export class AuthController {
   }
 
   @Public()
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  // Production-tight: 5 OTPs/min/IP. Env override exists ONLY for E2E runs
+  // (main.ts loads .env before this module evaluates, so the read is safe).
+  @Throttle({ default: { limit: Number(process.env.OTP_THROTTLE_LIMIT_PER_MIN ?? 5), ttl: 60_000 } })
   @Post("request-otp")
   @HttpCode(200)
   async requestOtp(@Body(new ZodValidationPipe(RequestOtpSchema)) dto: unknown) {

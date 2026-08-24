@@ -56,6 +56,7 @@ export class JwtAuthGuard implements CanActivate {
     if (rctx) {
       rctx.userId = payload.sub;
       rctx.communityId = req.auth.communityId;
+      rctx.actorLabel = req.auth.fullName ?? payload.sub;
     }
     return true;
   }

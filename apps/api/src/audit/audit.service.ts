@@ -8,6 +8,8 @@ export interface AuditInput {
   entityId?: string;
   communityId?: string | null;
   actorUserId?: string | null;
+  /** Optional explicit label; falls back to the authenticated principal. */
+  actorLabel?: string | null;
   before?: unknown;
   after?: unknown;
 }
@@ -32,6 +34,7 @@ export class AuditService {
           entityId: input.entityId,
           communityId: input.communityId ?? rctx?.communityId ?? null,
           actorUserId: input.actorUserId ?? rctx?.userId ?? null,
+          actorLabel: input.actorLabel ?? rctx?.actorLabel ?? null,
           before: input.before === undefined ? undefined : (input.before as object),
           after: input.after === undefined ? undefined : (input.after as object),
           ip: rctx?.ip,

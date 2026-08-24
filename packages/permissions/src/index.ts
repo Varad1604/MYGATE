@@ -122,7 +122,9 @@ export const SYSTEM_ROLE_PERMISSIONS: Record<SystemRole, Permission[]> = {
   RESIDENT_OWNER: p(
     "resident.read",
     "visitor.read", "visitor.create", "visitor.approve", "visitor.staff.manage",
-    "helpdesk.create", "helpdesk.read",
+    // NO helpdesk.read: residents see their OWN tickets via /me/tickets and
+    // own-ticket detail; community-wide ticket read is staff-only.
+    "helpdesk.create",
     "billing.read", "payment.read", "payment.pay",
     "amenity.read", "amenity.book",
     "notice.read",
@@ -133,7 +135,7 @@ export const SYSTEM_ROLE_PERMISSIONS: Record<SystemRole, Permission[]> = {
   RESIDENT_TENANT: p(
     "resident.read",
     "visitor.read", "visitor.create", "visitor.approve", "visitor.staff.manage",
-    "helpdesk.create", "helpdesk.read",
+    "helpdesk.create",
     "billing.read", "payment.read", "payment.pay",
     "amenity.read", "amenity.book",
     "notice.read",
@@ -142,7 +144,7 @@ export const SYSTEM_ROLE_PERMISSIONS: Record<SystemRole, Permission[]> = {
   FAMILY_MEMBER: p(
     "resident.read",
     "visitor.read", "visitor.create", "visitor.approve",
-    "helpdesk.create", "helpdesk.read",
+    "helpdesk.create",
     "amenity.read", "amenity.book",
     "notice.read",
   ),
