@@ -19,6 +19,7 @@ import { CommunitiesModule } from "./modules/communities/communities.module";
 import { ResidentsModule } from "./modules/residents/residents.module";
 import { VisitorsModule } from "./modules/visitors/visitors.module";
 import { HelpdeskModule } from "./modules/helpdesk/helpdesk.module";
+import { BillingModule } from "./modules/billing/billing.module";
 import { HealthController } from "./health/health.controller";
 
 @Module({
@@ -45,6 +46,7 @@ import { HealthController } from "./health/health.controller";
     ResidentsModule,
     VisitorsModule,
     HelpdeskModule,
+    BillingModule,
   ],
   controllers: [AuthController, DevAuthController, HealthController],
   providers: [

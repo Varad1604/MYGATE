@@ -23,6 +23,7 @@ const envSchema = z.object({
   OTP_TTL_SECONDS: z.coerce.number().default(300),
   OTP_MAX_ATTEMPTS: z.coerce.number().default(5),
   OTP_REQUESTS_PER_10MIN: z.coerce.number().default(3),
+  MOCK_PAYMENT_WEBHOOK_SECRET: z.string().default("dev-mock-payment-secret"),
   DEFAULT_VISITOR_APPROVAL_TIMEOUT_SECONDS: z.coerce.number().default(90),
 });
 

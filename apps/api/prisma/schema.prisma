@@ -831,6 +831,7 @@ model BillRun {
   frequency    BillFrequency
   periodLabel  String // "2026-02"
   scope        Json     @default("{}") // {kind: ALL|TOWER|UNIT_TYPE|SELECTED_UNITS|OCCUPANCY, ...}
+  lineTemplate Json     @default("[]") // [{chargeHeadId, amountPaise, description?}]
   dueDate      DateTime
   lateFeeConfig Json   @default("{}")
   status       BillRunStatus @default(DRAFT)
