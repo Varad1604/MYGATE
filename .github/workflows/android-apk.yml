@@ -1,4 +1,4 @@
-name: Android APK
+﻿name: Android APK
 
 # Build an installable debug APK of the resident app on every push to this
 # branch. Download it from the run's Artifacts section.
@@ -24,7 +24,7 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm turbo run build --filter=@societyos/resident-pwa
         env:
-          VITE_API_URL: http://192.168.1.9:4000/api/v1
+          VITE_API_URL: http://:4000/api/v1
 
       - name: Capacitor Android scaffold
         working-directory: apps/mobile-app
