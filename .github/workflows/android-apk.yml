@@ -24,7 +24,7 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm turbo run build --filter=@societyos/resident-pwa
         env:
-          VITE_API_URL: http://:4000/api/v1
+          VITE_API_URL: http://10.31.220.25:4000/api/v1
 
       - name: Capacitor Android scaffold
         working-directory: apps/mobile-app
