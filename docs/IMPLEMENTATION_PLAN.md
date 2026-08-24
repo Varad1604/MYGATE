@@ -9,16 +9,16 @@ states, audit where needed, tests, docs, green build).
 | Phase | Scope | Status |
 |---|---|---|
 | 0 | Monorepo, docs, ADRs, compose, CI | ✅ |
-| 1 | Embedded PG runner, Prisma core schema, auth+tenancy+RBAC+audit API | 🚧 |
-| 2 | Society structure + residents slice (API + admin UI) | ⬜ |
-| 3 | Visitor security + guard PWA + resident approvals + SSE | ⬜ |
-| 4 | Helpdesk (tickets, categories, SLA engine) | ⬜ |
-| 5 | Billing + payments + receipts (+ mock provider webhooks) | ⬜ |
-| 6 | Amenities + transactional booking | ⬜ |
-| 7 | Notices + notification service | ⬜ |
-| 8 | Vehicles + parking | ⬜ |
-| 9 | Dashboards/reports + audit UI + platform super admin | ⬜ |
-| 10 | E2E A–J, hardening, seed data finalization, docs | ⬜ |
+| 1 | Embedded PG runner, Prisma core schema, auth+tenancy+RBAC+audit API | ✅ |
+| 2 | Society structure + residents slice (API + admin UI) | ✅ |
+| 3 | Visitor security + guard PWA + resident approvals + SSE | ✅ |
+| 4 | Helpdesk (tickets, categories, SLA engine) | ✅ |
+| 5 | Billing + payments + receipts (+ mock provider webhooks) | ✅ |
+| 6 | Amenities + transactional booking | ✅ |
+| 7 | Notices + notification service | ✅ |
+| 8 | Vehicles + parking | ✅ |
+| 9 | Dashboards/reports + audit UI + platform super admin | 🚧 dashboard+audit live; reports aggregation pending |
+| 10 | E2E A–J, hardening, seed data finalization, docs | 🚧 module suites green; scenario matrix pass pending |
 
 Release 2 items start only after Phase 10 is green.
 

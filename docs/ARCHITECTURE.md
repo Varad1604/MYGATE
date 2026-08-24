@@ -19,15 +19,23 @@
 
 ## Backend
 
-- **NestJS 11** modular monolith organized by bounded domains:
-  `auth, tenancy, communities, residents, visitors, helpdesk, billing,
-  payments, amenities, notifications, parking, staff, vendors, assets,
-  inventory, reports, audit, files`.
+- **NestJS 11** modular monolith organized by bounded domains. Implemented
+  today: `auth (+OTP/JWT/refresh rotation), communities, residents, visitors
+  (+domestic help), helpdesk (SLA engine), billing, payments (mock gateway,
+  ADR-004), amenities (race-safe booking), notices (audience targeting +
+  scheduled publish), parking, notifications, realtime (SSE), audit
+  (append-only), platform (super-admin), queue, storage, files`.
 - **REST + OpenAPI**; consistent envelope, pagination, filtering, errors.
+  Zod-per-route validation (`ZodValidationPipe`), no global pipe.
 - **Realtime**: Server-Sent Events per authenticated principal
   (`/realtime/stream`) — visitor approvals, ticket updates, notifications.
   Chosen over WebSockets for proxy-friendliness and simplicity; transport can
-  be swapped behind `RealtimeGateway`.
+  be swapped behind `RealtimeGateway`. EventSource clients authenticate via a
+  short-lived `?access_token=` accepted on this route only.
+- **Recurring sweeps** (visitor expiry, ticket SLA, notice publish/expire)
+  run as in-process timers; one-shot work (notice fan-out) travels through
+  the durable queue. The queue driver reaps stale PROCESSING claims so
+  crashed workers cannot wedge dedupe keys.
 
 ## Multi-tenancy model (ADR-001)
 
