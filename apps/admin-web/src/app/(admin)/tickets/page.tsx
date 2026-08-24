@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { get, post } from "@/lib/api";
@@ -64,7 +64,7 @@ export default function TicketsPage() {
       </div>
       {err && <div className="error">{err}</div>}
       <div className="card">
-        <table>
+        <div className="table-wrap"><table className="data">
           <thead>
             <tr><th>Ref</th><th>Title</th><th>Unit</th><th>Category</th><th>Status</th><th>Priority</th><th>Actions</th></tr>
           </thead>
@@ -90,7 +90,7 @@ export default function TicketsPage() {
               <tr><td colSpan={7} className="muted">No tickets{filter ? ` with status ${filter}` : ""}.</td></tr>
             )}
           </tbody>
-        </table>
+        </table></div>
       </div>
     </>
   );

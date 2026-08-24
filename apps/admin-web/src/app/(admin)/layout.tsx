@@ -25,35 +25,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="shell">
-      <aside className="side">
-        <div className="brand">SocietyOS</div>
+      <aside className="sidebar">
+        <div className="brand">
+          <span className="brand-dot" aria-hidden />
+          <span>SocietyOS</span>
+        </div>
         {NAV.map((n) => (
           <Link
             key={n.href}
             href={n.href}
-            className="nav-item"
-            style={pathname.startsWith(n.href) ? { background: "#16223a", color: "var(--text)" } : undefined}
+            className={`nav-item${pathname.startsWith(n.href) ? " active" : ""}`}
+            aria-current={pathname.startsWith(n.href) ? "page" : undefined}
           >
-            {n.label}
+            <span>{n.label}</span>
           </Link>
         ))}
         {session.isPlatformSuperAdmin && (
           <Link
             href="/platform"
-            className="nav-item"
-            style={{ color: "var(--warn)", ...((pathname.startsWith("/platform") ? { background: "#16223a" } : {})) }}
+            className={`nav-item${pathname.startsWith("/platform") ? " active" : ""}`}
           >
-            ⚡ Platform
+            <span>Platform</span>
           </Link>
         )}
-        <div style={{ flex: 1 }} />
-        <div className="muted" style={{ fontSize: 12, padding: "0 10px 8px" }}>
-          {session.name}
-          <br />
-          {session.communityName}
-        </div>
+        <div className="spacer" />
         <button
-          className="ghost"
+          className="btn secondary sm"
           onClick={() => {
             clearSession();
             router.push("/login");
@@ -61,6 +58,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         >
           Sign out
         </button>
+        <div className="sidebar-user">
+          {session.name} · {session.communityName}
+        </div>
       </aside>
       <main className="main">{children}</main>
     </div>

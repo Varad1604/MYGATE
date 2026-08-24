@@ -1,0 +1,77 @@
+/* ============================================================
+   SocietyOS Admin — "Quiet Confidence" design tokens
+   Single source of truth. NO hardcoded hex outside this file.
+   Light theme, warm paper; dark-mode-ready variable structure.
+   ============================================================ */
+
+:root {
+  /* ── Ink & paper (neutrals, warm) ─────────────────────────── */
+  --paper: #fafaf8;          /* app background            */
+  --surface: #ffffff;        /* cards, panels             */
+  --surface-2: #f2f1ed;      /* subtle wells, table head  */
+  --ink: #191917;            /* primary text              */
+  --ink-2: #57564f;          /* secondary text            */
+  --ink-3: #8a887f;          /* placeholder, captions     */
+  --line: #e4e2db;           /* hairline borders          */
+  --line-strong: #d3d1c7;    /* hover borders             */
+
+  /* ── Accent: deep teal, used sparingly ────────────────────── */
+  --accent: #0f6b5c;
+  --accent-hover: #0c584b;
+  --accent-subtle: #e7f1ee;  /* tinted backgrounds        */
+  --on-accent: #ffffff;
+
+  /* ── Semantic (status/money/danger ONLY) ──────────────────── */
+  --ok: #1a7f37;
+  --ok-subtle: #e9f4ec;
+  --warn: #9a6700;
+  --warn-subtle: #fbf0e1;
+  --danger: #c22731;
+  --danger-hover: #a91e27;
+  --danger-subtle: #fbebec;
+
+  /* ── Type scale (strict; nothing outside it) ──────────────── */
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+  --fs-2xl: 28px;
+
+  /* ── Space (4px grid) ─────────────────────────────────────── */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+
+  /* ── Shape & elevation ────────────────────────────────────── */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --shadow-overlay: 0 8px 30px rgba(25, 25, 23, 0.14);
+
+  /* ── Motion ───────────────────────────────────────────────── */
+  --t-fast: 150ms ease-out;
+  --t-med: 200ms ease-out;
+
+  /* ── Layout ───────────────────────────────────────────────── */
+  --sidebar-w: 232px;
+  --content-max: 1200px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #161615;
+    --surface: #1f1f1d;
+    --surface-2: #262624;
+    --ink: #ecebe7;
+    --ink-2: #b3b1a9;
+    --ink-3: #807e76;
+    --line: #33322f;
+    --line-strong: #454440;
+    --accent: #3aa08c;
+    --accent-hover: #4bb39e;
+    --accent-subtle: #1c2f2a;
+    --ok: #57ab5a;      --ok-subtle: #1e2d21;
+    --warn: #c98a1b;    --warn-subtle: #2f2718;
+    --danger: #e5534b;  --danger-hover: #f0655e; --danger-subtle: #331d1c;
+  }
+}

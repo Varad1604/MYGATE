@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { get } from "@/lib/api";
@@ -41,7 +41,7 @@ export default function AuditPage() {
       <h1>Audit log <span className="muted" style={{ fontSize: 13 }}>(append-only)</span></h1>
       {err && <div className="error">{err}</div>}
       <div className="card">
-        <table>
+        <div className="table-wrap"><table className="data">
           <thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Entity</th><th>IP</th><th>After</th></tr></thead>
           <tbody>
             {rows.map((r) => (
@@ -49,20 +49,20 @@ export default function AuditPage() {
                 <td className="muted">{new Date(r.createdAt).toLocaleString("en-IN")}</td>
                 <td className="muted">{r.actorLabel ?? r.actorUserId?.slice(0, 8) ?? "system"}</td>
                 <td><span className="pill">{r.action}</span></td>
-                <td className="muted">{r.entityType}{r.entityId ? ` · ${r.entityId.slice(0, 8)}` : ""}</td>
-                <td className="muted">{r.ip ?? "—"}</td>
+                <td className="muted">{r.entityType}{r.entityId ? ` Â· ${r.entityId.slice(0, 8)}` : ""}</td>
+                <td className="muted">{r.ip ?? "â€”"}</td>
                 <td style={{ maxWidth: 260, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {r.after ? JSON.stringify(r.after) : "—"}
+                  {r.after ? JSON.stringify(r.after) : "â€”"}
                 </td>
               </tr>
             ))}
             {!rows.length && <tr><td colSpan={6} className="muted">No audit events.</td></tr>}
           </tbody>
-        </table>
+        </table></div>
         <div className="row" style={{ marginTop: 10 }}>
-          <button className="ghost" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>← Prev</button>
+          <button className="btn ghost sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>â† Prev</button>
           <span className="muted">Page {page} of {pages} ({total} events)</span>
-          <button className="ghost" disabled={page >= pages} onClick={() => setPage((p) => p + 1)}>Next →</button>
+          <button className="btn ghost sm" disabled={page >= pages} onClick={() => setPage((p) => p + 1)}>Next â†’</button>
         </div>
       </div>
     </>

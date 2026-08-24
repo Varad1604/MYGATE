@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { get, post } from "@/lib/api";
@@ -87,12 +87,12 @@ export default function NoticesPage() {
               style={{ width: 220 }}
               title="Leave empty to publish now"
             />
-            <button type="submit" disabled={busy}>{busy ? "Publishing…" : scheduleAt ? "Schedule" : "Publish now"}</button>
+            <button type="submit" disabled={busy}>{busy ? "Publishingâ€¦" : scheduleAt ? "Schedule" : "Publish now"}</button>
           </div>
         </form>
       </div>
       <div className="card">
-        <table>
+        <div className="table-wrap"><table className="data">
           <thead><tr><th>Title</th><th>Type</th><th>Audience</th><th>Status</th><th>Publish at</th><th>ACK</th></tr></thead>
           <tbody>
             {notices.map((n) => (
@@ -104,11 +104,11 @@ export default function NoticesPage() {
                   <span className={`pill ${n.status === "PUBLISHED" ? "ok" : n.status === "EXPIRED" ? "" : "warn"}`}>{n.status}</span>
                 </td>
                 <td className="muted">{new Date(n.publishAt).toLocaleString("en-IN")}</td>
-                <td>{n.requireAcknowledgement ? "yes" : "—"}</td>
+                <td>{n.requireAcknowledgement ? "yes" : "â€”"}</td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </div>
     </>
   );

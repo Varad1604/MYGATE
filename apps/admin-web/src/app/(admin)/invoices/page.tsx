@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { get, post, fmtPaise } from "@/lib/api";
@@ -61,7 +61,7 @@ export default function InvoicesPage() {
         </div>
       )}
       <div className="card">
-        <table>
+        <div className="table-wrap"><table className="data">
           <thead>
             <tr><th>Reference</th><th>Unit</th><th>Period</th><th>Total</th><th>Paid</th><th>Status</th><th>Due</th><th>Actions</th></tr>
           </thead>
@@ -83,15 +83,15 @@ export default function InvoicesPage() {
                   <div className="row">
                     {inv.status === "DRAFT" && <button onClick={() => issue(inv)}>Issue</button>}
                     {["DRAFT", "ISSUED"].includes(inv.status) && inv.paidPaise === 0 && (
-                      <button className="ghost" onClick={() => cancel(inv)}>Cancel</button>
+                      <button className="btn ghost sm" onClick={() => cancel(inv)}>Cancel</button>
                     )}
                   </div>
                 </td>
               </tr>
             ))}
-            {!data?.items.length && <tr><td colSpan={8} className="muted">No invoices yet — create a bill run via the API/seed.</td></tr>}
+            {!data?.items.length && <tr><td colSpan={8} className="muted">No invoices yet â€” create a bill run via the API/seed.</td></tr>}
           </tbody>
-        </table>
+        </table></div>
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { get, fmtPaise } from "@/lib/api";
@@ -52,10 +52,10 @@ export default function ReportsPage() {
     <>
       <h1>Reports</h1>
       {err && <div className="error">{err}</div>}
-      {!summary && !err && <p className="muted">Loading…</p>}
+      {!summary && !err && <p className="muted">Loadingâ€¦</p>}
       {summary && (
         <div className="stats">
-          <div className="card stat"><div className="num">{summary.residents}</div><div className="lbl">Residents · {summary.occupiedUnits}/{summary.units} units occupied</div></div>
+          <div className="card stat"><div className="num">{summary.residents}</div><div className="lbl">Residents Â· {summary.occupiedUnits}/{summary.units} units occupied</div></div>
           <div className="card stat"><div className="num">{summary.openTickets}</div><div className="lbl">Open tickets</div></div>
           <div className="card stat"><div className="num">{summary.visitsToday}</div><div className="lbl">Visits today</div></div>
           <div className="card stat"><div className="num" style={{ color: summary.dues.outstandingPaise > 0 ? "var(--warn)" : "var(--ok)" }}>{fmtPaise(summary.dues.outstandingPaise)}</div><div className="lbl">Outstanding dues</div></div>
@@ -65,7 +65,7 @@ export default function ReportsPage() {
       {collections.length > 0 && (
         <div className="card">
           <strong>Collections by billing period</strong>
-          <table style={{ marginTop: 8 }}>
+          <div className="table-wrap" style={{ marginTop: "var(--s-3)" }}><table className="data">
             <thead><tr><th>Period</th><th>Invoices</th><th>Billed</th><th>Collected</th><th>Outstanding</th></tr></thead>
             <tbody>
               {collections.map((c) => (
@@ -78,30 +78,30 @@ export default function ReportsPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         </div>
       )}
 
       {helpdesk && (
         <div className="card">
-          <strong>Helpdesk — last 30 days</strong>
+          <strong>Helpdesk â€” last 30 days</strong>
           <div className="row" style={{ marginTop: 8 }}>
             <span className="pill">total {helpdesk.totalTickets}</span>
             {Object.entries(helpdesk.byStatus).map(([s, n]) => <span key={s} className={`pill ${["RESOLVED", "CLOSED"].includes(s) ? "ok" : "warn"}`}>{s}: {n}</span>)}
             <span className={`pill ${helpdesk.currentlyBreached ? "danger" : "ok"}`}>SLA breached now: {helpdesk.currentlyBreached}</span>
           </div>
           <div className="muted" style={{ marginTop: 8 }}>
-            By category: {helpdesk.byCategory.map((c) => `${c.name} (${c.count})`).join(", ") || "—"}
+            By category: {helpdesk.byCategory.map((c) => `${c.name} (${c.count})`).join(", ") || "â€”"}
           </div>
         </div>
       )}
 
       {visitors && (
         <div className="card">
-          <strong>Visitor traffic — last 30 days</strong>
+          <strong>Visitor traffic â€” last 30 days</strong>
           <div className="muted" style={{ marginTop: 6 }}>
-            {visitors.totalVisits} visits · {visitors.checkedOut} exited ·{" "}
-            {Object.entries(visitors.byApprovalMethod).map(([m, n]) => `${m}: ${n}`).join(" · ")}
+            {visitors.totalVisits} visits Â· {visitors.checkedOut} exited Â·{" "}
+            {Object.entries(visitors.byApprovalMethod).map(([m, n]) => `${m}: ${n}`).join(" Â· ")}
           </div>
           <div style={{ display: "flex", alignItems: "flex-end", gap: 4, marginTop: 10, height: 60 }}>
             {visitors.perDay.map((d) => (

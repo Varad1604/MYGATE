@@ -30,6 +30,14 @@
     "typescript-eslint": "8.19.0"
   },
   "pnpm": {
+    "packageExtensions": {
+      "react@19.0.0": {
+        "peerDependencies": { "@types/react": "^19.0.0" }
+      },
+      "react-dom@19.0.0": {
+        "peerDependencies": { "@types/react": "^19.0.0", "@types/react-dom": "^19.0.0" }
+      }
+    },
     "onlyBuiltDependencies": [
       "@embedded-postgres/windows-x64",
       "@prisma/client",

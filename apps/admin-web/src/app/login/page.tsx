@@ -7,8 +7,14 @@ import { setSession } from "@/lib/session";
 interface LoginResponse {
   accessToken: string;
   refreshToken: string;
-  user: { id: string; fullName: string };
-  context: { communityId: string; communityName?: string; isPlatformSuperAdmin?: boolean };
+  // The API returns the principal INSIDE context (no separate user object).
+  context: {
+    userId: string;
+    fullName?: string;
+    communityId?: string;
+    communityName?: string;
+    isPlatformSuperAdmin?: boolean;
+  };
 }
 
 export default function LoginPage() {
@@ -19,21 +25,22 @@ export default function LoginPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (!identifier.trim() || !password) { setErr("Enter your email and password."); return; }
     setErr(null);
     setBusy(true);
     try {
-      const res = await api().post<LoginResponse>("/auth/login", { identifier, password });
+      const res = await api().post<LoginResponse>("/auth/login", { identifier: identifier.trim(), password });
       persistTokens(res.accessToken, res.refreshToken);
       setSession({
-        userId: res.user.id,
-        name: res.user.fullName,
-        communityId: res.context.communityId,
+        userId: res.context.userId,
+        name: res.context.fullName ?? identifier,
+        communityId: res.context.communityId ?? "",
         communityName: res.context.communityName ?? "Community",
         isPlatformSuperAdmin: res.context.isPlatformSuperAdmin ?? false,
       });
       window.location.href = "/dashboard";
-    } catch (e2) {
-      setErr(e2 instanceof Error ? e2.message : "Login failed");
+    } catch {
+      setErr("Sign-in failed — check your email and password.");
     } finally {
       setBusy(false);
     }
@@ -41,30 +48,40 @@ export default function LoginPage() {
 
   return (
     <div className="login-wrap">
-      <div className="card">
-        <div className="brand" style={{ marginBottom: 8 }}>SocietyOS Admin</div>
+      <div className="card login-card">
+        <div className="login-brand">
+          <span className="brand-dot" aria-hidden />
+          SocietyOS
+        </div>
+        <p className="login-sub">Society administration console.</p>
         <form onSubmit={submit}>
-          <div style={{ marginBottom: 10 }}>
+          <label className="field" style={{ marginBottom: "var(--s-3)" }}>
+            Email or phone
             <input
-              placeholder="Email or phone"
+              className="input"
               value={identifier}
               onChange={(e) => setId(e.target.value)}
               autoComplete="username"
             />
-          </div>
-          <div style={{ marginBottom: 12 }}>
+          </label>
+          <label className="field" style={{ marginBottom: "var(--s-5)" }}>
+            Password
             <input
+              className="input"
               type="password"
-              placeholder="Password"
               value={password}
               onChange={(e) => setPw(e.target.value)}
               autoComplete="current-password"
             />
-          </div>
-          <button type="submit" disabled={busy} style={{ width: "100%" }}>
+          </label>
+          <button className="btn" type="submit" disabled={busy} style={{ width: "100%" }}>
             {busy ? "Signing in…" : "Sign in"}
           </button>
-          {err && <div className="error">{err}</div>}
+          {err && (
+            <div className="error-box" role="alert" style={{ marginTop: "var(--s-3)", justifyContent: "center" }}>
+              {err}
+            </div>
+          )}
         </form>
       </div>
     </div>

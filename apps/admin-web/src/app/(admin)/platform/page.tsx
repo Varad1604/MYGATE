@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { get, post, api } from "@/lib/api";
@@ -11,7 +11,7 @@ interface Community {
 
 /**
  * Platform super-admin console. The API enforces
- * platform.communities.manage on every call — this page merely hides itself.
+ * platform.communities.manage on every call â€” this page merely hides itself.
  */
 export default function PlatformPage() {
   const session = useRequireSession();
@@ -26,7 +26,7 @@ export default function PlatformPage() {
     try {
       setCommunities(await get<Community[]>("/platform/communities"));
     } catch (e) {
-      // Non-platform admins get PERMISSION_DENIED — show the empty state.
+      // Non-platform admins get PERMISSION_DENIED â€” show the empty state.
       setCommunities(null);
       setErr(e instanceof Error ? e.message : "Load failed");
     }
@@ -71,7 +71,7 @@ export default function PlatformPage() {
     <>
       <h1>Platform console</h1>
       {err && <div className="error">{err}</div>}
-      {communities === null && !session && <p className="muted">Loading…</p>}
+      {communities === null && !session && <p className="muted">Loadingâ€¦</p>}
       {communities !== null && (
         <>
           <div className="card">
@@ -81,12 +81,12 @@ export default function PlatformPage() {
                 <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required minLength={3} style={{ width: 220 }} />
                 <input placeholder="slug" value={slug} onChange={(e) => setSlug(e.target.value)} required pattern="[a-z0-9-]{3,40}" title="lowercase-kebab" style={{ width: 160 }} />
                 <input placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} required minLength={2} style={{ width: 140 }} />
-                <button type="submit" disabled={busy}>{busy ? "Creating…" : "Create"}</button>
+                <button type="submit" disabled={busy}>{busy ? "Creatingâ€¦" : "Create"}</button>
               </div>
             </form>
           </div>
           <div className="card">
-            <table>
+            <div className="table-wrap"><table className="data">
               <thead><tr><th>Name</th><th>Slug</th><th>City</th><th>Status</th><th>Actions</th></tr></thead>
               <tbody>
                 {communities.map((c) => (
@@ -100,7 +100,7 @@ export default function PlatformPage() {
                     <td>
                       <div className="row">
                         {c.status !== "SUSPENDED" && (
-                          <button className="ghost" onClick={() => setStatus(c, "SUSPENDED")}>Suspend</button>
+                          <button className="btn ghost sm" onClick={() => setStatus(c, "SUSPENDED")}>Suspend</button>
                         )}
                         {c.status === "SUSPENDED" && (
                           <button onClick={() => setStatus(c, "ACTIVE")}>Reactivate</button>
@@ -111,7 +111,7 @@ export default function PlatformPage() {
                 ))}
                 {!communities.length && <tr><td colSpan={5} className="muted">No communities yet.</td></tr>}
               </tbody>
-            </table>
+            </table></div>
           </div>
         </>
       )}
